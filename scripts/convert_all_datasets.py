@@ -77,12 +77,12 @@ for dset in DATASETS:
 
     with open(PATH_RAW) as dataset:
         data = pickle.load(dataset)
-
-    # Decode data
-    try:
-        texts = [unicode(x) for x in data['texts']]
-    except UnicodeDecodeError:
-        texts = [x.decode('utf-8') for x in data['texts']]
+    # 
+    # # Decode data
+    # try:
+    #     texts = [unicode(x) for x in data['texts']]
+    # except UnicodeDecodeError:
+    #     texts = [x.decode('utf-8') for x in data['texts']]
 
     wg = WordGenerator(texts)
     vb = VocabBuilder(wg)

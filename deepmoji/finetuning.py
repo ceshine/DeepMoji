@@ -1,6 +1,6 @@
 """ Finetuning functions for doing transfer learning to new datasets.
 """
-from __future__ import print_function
+
 
 import sys
 import uuid
@@ -18,13 +18,13 @@ from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
 from keras.models import model_from_json
 
-from global_variables import (
+from .global_variables import (
     FINETUNING_METHODS,
     FINETUNING_METRICS,
     WEIGHTS_DIR)
-from tokenizer import tokenize
-from sentence_tokenizer import SentenceTokenizer
-from attlayer import AttentionWeightedAverage
+from .tokenizer import tokenize
+from .sentence_tokenizer import SentenceTokenizer
+from .attlayer import AttentionWeightedAverage
 
 
 def load_benchmark(path, vocab, extend_with=0):
@@ -54,25 +54,25 @@ def load_benchmark(path, vocab, extend_with=0):
             maxlen: Maximum length of an input.
     """
     # Pre-processing dataset
-    with open(path) as dataset:
+    with open(path, "rb") as dataset:
         data = pickle.load(dataset)
 
-    # Decode data
-    try:
-        texts = [unicode(x) for x in data['texts']]
-    except UnicodeDecodeError:
-        texts = [x.decode('utf-8') for x in data['texts']]
+    # # Decode data
+    # try:
+    #     texts = [str(x) for x in data['texts']]
+    # except UnicodeDecodeError:
+    #     texts = [x.decode('utf-8') for x in data['texts']]
 
     # Extract labels
     labels = [x['label'] for x in data['info']]
 
-    batch_size, maxlen = calculate_batchsize_maxlen(texts)
+    batch_size, maxlen = calculate_batchsize_maxlen(data['texts'])
 
     st = SentenceTokenizer(vocab, maxlen)
 
     # Split up dataset. Extend the existing vocabulary with up to extend_with
     # tokens from the training dataset.
-    texts, labels, added = st.split_train_val_test(texts,
+    texts, labels, added = st.split_train_val_test(data['texts'],
                                                    labels,
                                                    [data['train_ind'],
                                                     data['val_ind'],
@@ -254,7 +254,7 @@ def sampling_generator(X_in, y_in, batch_size, epoch_size=25000,
         assert epoch_size % 2 == 0
         samples_pr_class = int(epoch_size / 2)
     else:
-        ind = range(len(X_in))
+        ind = list(range(len(X_in)))
 
     # Keep looping until training halts
     while True:

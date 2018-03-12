@@ -41,5 +41,5 @@ model = deepmoji_transfer(nb_classes, data['maxlen'], PRETRAINED_PATH,
                           extend_embedding=data['added'])
 model.summary()
 model, acc = finetune(model, data['texts'], data['labels'], nb_classes,
-                      data['batch_size'], method='chain-thaw')
+                      data['batch_size'], method='chain-thaw', verbose=2)
 print('Acc: {}'.format(acc))

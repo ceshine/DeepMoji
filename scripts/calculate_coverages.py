@@ -32,11 +32,11 @@ for p in DATASET_PATHS:
     with open(p) as f:
         s = pickle.load(f)
 
-    # Decode data
-    try:
-        s['texts'] = [unicode(x) for x in s['texts']]
-    except UnicodeDecodeError:
-        s['texts'] = [x.decode('utf-8') for x in s['texts']]
+    # # Decode data
+    # try:
+    #     s['texts'] = [unicode(x) for x in s['texts']]
+    # except UnicodeDecodeError:
+    #     s['texts'] = [x.decode('utf-8') for x in s['texts']]
 
     # Own
     st = SentenceTokenizer({}, 30)
